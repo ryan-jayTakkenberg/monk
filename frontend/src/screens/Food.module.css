@@ -1,0 +1,187 @@
+.ringWrap {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin: 0 auto 1.25rem;
+}
+
+.ringInner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.ringKcal {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px;
+  letter-spacing: 0.03em;
+  color: var(--txt);
+  line-height: 1;
+}
+
+.ringLabel {
+  font-size: 11px;
+  color: var(--txt3);
+  margin-top: 2px;
+}
+
+.macroRow {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.macro {
+  text-align: center;
+}
+
+.macroVal {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  color: var(--txt);
+  line-height: 1;
+}
+
+.macroName {
+  font-size: 10px;
+  color: var(--txt3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 2px;
+}
+
+.logBtn {
+  width: 100%;
+  background: var(--acc);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.8rem;
+  font-family: 'Barlow', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 1.25rem;
+}
+
+.error {
+  font-size: 13px;
+  color: #c0392b;
+  margin-bottom: 0.75rem;
+}
+
+.sheet {
+  background: var(--bg2);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.photoPreview {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+}
+
+.sheetStatus {
+  font-size: 14px;
+  color: var(--txt2);
+  text-align: center;
+  padding: 0.5rem 0;
+}
+
+.mealName {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--txt);
+  margin-bottom: 0.4rem;
+}
+
+.analysisRow {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: var(--txt2);
+  margin-bottom: 1rem;
+}
+
+.sheetActions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.cancelBtn {
+  flex: 1;
+  background: var(--bg3);
+  color: var(--txt2);
+  border: none;
+  border-radius: 8px;
+  padding: 0.7rem;
+  font-family: 'Barlow', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.confirmBtn {
+  flex: 2;
+  background: var(--acc);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.7rem;
+  font-family: 'Barlow', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.mealList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.mealRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--bg2);
+  border-radius: 10px;
+  padding: 0.75rem;
+}
+
+.thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.mealInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.mealRowName {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--txt);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mealRowMacros {
+  font-size: 12px;
+  color: var(--txt3);
+  margin-top: 2px;
+}

@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Monk — Mind. Body. Rest.</title>
+<meta name="description" content="Built for men who don't miss days.">
+<meta name="theme-color" content="#1A6FD4">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Monk">
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;500;600&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;background:#0a0a0a;display:flex;align-items:center;justify-content:center;font-family:'Barlow',sans-serif;}
+:root{
+  --acc:#1A6FD4;--acc-dark:#0C4A9E;--acc-dim:#E6F1FB;--acc-mid:#378ADD;
+  --bg:#ffffff;--bg2:#f4f4f4;--bg3:#ebebeb;
+  --txt:#0a0a0a;--txt2:#666;--txt3:#999;
+  --brd:rgba(0,0,0,0.1);--brd2:rgba(0,0,0,0.2);
+}
+
+/* Phone frame */
+.phone{
+  width:390px;height:820px;
+  background:var(--bg);
+  border-radius:44px;
+  overflow:hidden;
+  display:flex;flex-direction:column;
+  position:relative;
+  box-shadow:0 0 0 1px #222,0 40px 80px rgba(0,0,0,.6);
+}
+.status-bar{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:.5rem 1.5rem .25rem;
+  background:var(--bg);
+  flex-shrink:0;
+}
+.status-time{font-size:13px;font-weight:500;color:var(--txt);}
+.status-icons{display:flex;gap:5px;align-items:center;}
+.status-icons svg{width:14px;height:14px;}
+
+.app-body{flex:1;overflow:hidden;display:flex;flex-direction:column;}
+
+.screen{display:none;flex-direction:column;flex:1;overflow:hidden;}
+.screen.active{display:flex;}
+.scroll-area{flex:1;overflow-y:auto;padding:1.25rem 1.25rem 0;-webkit-overflow-scrolling:touch;}
+.scroll-area::-webkit-scrollbar{display:none;}
+
+.nav{
+  display:flex;
+  border-top:0.5px solid var(--brd);
+  background:var(--bg);
+  padding-bottom:env(safe-area-inset-bottom,0);
+  flex-shrink:0;
+}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:.625rem 0;cursor:pointer;border:none;background:transparent;}
+.nl{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--txt3);font-family:'Barlow Condensed',sans-serif;font-weight:600;}
+.nb.active .nl{color:var(--acc);}
+
+/* Shared components */
+.sl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--txt2);font-family:'Barlow Condensed',sans-serif;margin-bottom:.625rem;}
+.pgt{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:.05em;color:var(--txt);margin-bottom:1.5rem;}
+
+/* HOME */
+.top-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.75rem;}
+.greet{font-family:'Bebas Neue',sans-serif;font-size:34px;letter-spacing:.05em;line-height:1;color:var(--txt);}
+.sub{font-size:11px;color:var(--txt2);text-transform:uppercase;letter-spacing:.08em;margin-top:3px;}
+.day-badge{padding:5px 12px;border-radius:6px;border:0.5px solid var(--brd2);background:var(--bg2);}
+.day-badge span{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:.05em;color:var(--txt2);}
+
+.qcard{border-left:3px solid var(--acc);padding:1rem 1rem 1rem 1.125rem;background:var(--bg2);border-radius:0 10px 10px 0;margin-bottom:1.75rem;}
+.qtxt{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:.04em;line-height:1.32;color:var(--txt);}
+.qby{font-size:11px;color:var(--txt2);text-transform:uppercase;letter-spacing:.09em;margin-top:5px;}
+
+.vrow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:1.5rem;}
+.vt{background:var(--bg2);border-radius:10px;padding:.875rem .75rem;}
+.vt.key{background:var(--acc-dim);border:0.5px solid #B5D4F4;}
+.vv{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:.03em;color:var(--txt);}
+.vt.key .vv{color:var(--acc-dark);}
+.vl{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--txt2);margin-top:2px;}
+.vt.key .vl{color:var(--acc);}
+
+.sug{display:flex;align-items:flex-start;gap:.875rem;background:var(--bg);border:0.5px solid var(--brd);border-radius:10px;padding:.875rem 1rem;margin-bottom:.625rem;}
+.si{width:36px;height:36px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.si.b{background:var(--acc-dim);}
+.si.g{background:#EAF3DE;}
+.si.s{background:var(--bg2);}
+.st{font-size:13px;font-weight:500;line-height:1.3;color:var(--txt);}
+.sd{font-size:12px;color:var(--txt2);margin-top:3px;line-height:1.4;}
+
+/* JOURNAL */
+.j-card{background:var(--bg);border:0.5px solid var(--acc);border-radius:10px;overflow:hidden;margin-bottom:.625rem;}
+.j-header{display:flex;align-items:center;justify-content:space-between;padding:.875rem 1rem;cursor:pointer;}
+.j-title-wrap{display:flex;align-items:center;gap:.75rem;}
+.j-icon{width:36px;height:36px;background:var(--acc-dim);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.j-title{font-size:13px;font-weight:500;color:var(--txt);}
+.j-subtitle{font-size:11px;color:var(--txt2);margin-top:2px;}
+.j-badge{font-size:10px;font-family:'Barlow Condensed',sans-serif;font-weight:600;text-transform:uppercase;letter-spacing:.07em;padding:3px 8px;border-radius:4px;background:var(--acc);color:#fff;}
+.j-body{padding:0 1rem 1rem;border-top:0.5px solid var(--acc-dim);}
+.q-step{padding-top:.875rem;}
+.q-num{font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--acc);font-weight:600;margin-bottom:5px;}
+.q-text{font-size:14px;font-weight:500;line-height:1.4;margin-bottom:.625rem;color:var(--txt);}
+.q-input{width:100%;border:0.5px solid var(--brd2);border-radius:8px;padding:.625rem .75rem;font-size:13px;font-family:'Barlow',sans-serif;background:var(--bg2);color:var(--txt);resize:none;min-height:72px;}
+.q-input:focus{outline:none;border-color:var(--acc);}
+.q-nav{display:flex;align-items:center;justify-content:space-between;margin-top:.75rem;}
+.q-dots{display:flex;gap:5px;}
+.qdot{width:6px;height:6px;border-radius:50%;background:var(--brd2);}
+.qdot.active{background:var(--acc);}
+.q-next{padding:.5rem 1.25rem;background:var(--acc);color:#fff;border:none;border-radius:7px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:.07em;cursor:pointer;transition:opacity .15s;}
+.q-next:hover{opacity:.88;}
+.j-done{text-align:center;padding:.875rem 0 .25rem;}
+.j-done-icon{width:44px;height:44px;background:var(--acc-dim);border-radius:50%;margin:0 auto .625rem;display:flex;align-items:center;justify-content:center;}
+.j-done-txt{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.05em;color:var(--acc-dark);}
+.j-done-sub{font-size:12px;color:var(--txt2);margin-top:3px;}
+
+/* WEEKLY RECAP */
+.recap-card{background:var(--bg2);border-radius:10px;padding:1.125rem;margin-top:1.25rem;}
+.recap-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--acc);font-weight:600;margin-bottom:.625rem;}
+.recap-txt{font-size:13px;color:var(--txt);line-height:1.6;border-left:2px solid var(--acc);padding-left:.875rem;margin-bottom:1rem;}
+.recap-entry{padding:.5rem 0;border-bottom:0.5px solid var(--brd);}
+.recap-entry:last-child{border-bottom:none;}
+.re-day{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--acc);font-weight:600;}
+.re-q{font-size:11px;color:var(--txt2);margin-top:3px;}
+.re-a{font-size:13px;color:var(--txt);margin-top:2px;line-height:1.4;}
+
+/* FOOD */
+.kring{display:flex;align-items:center;gap:1.25rem;margin-bottom:1.5rem;}
+.rw{position:relative;width:84px;height:84px;flex-shrink:0;}
+.rc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.rn{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.03em;line-height:1;color:var(--txt);}
+.ru{font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:var(--txt2);}
+.rm h3{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:.04em;color:var(--txt);}
+.rm p{font-size:12px;color:var(--txt2);margin-top:3px;line-height:1.5;}
+.macs{display:flex;gap:8px;margin-bottom:1.5rem;}
+.mac{flex:1;background:var(--bg2);border-radius:8px;padding:.75rem;}
+.mv{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.03em;color:var(--txt);}
+.ml{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--txt2);margin-top:1px;}
+.mb{height:2px;border-radius:1px;margin-top:7px;}
+.meal-row{display:flex;align-items:center;gap:10px;padding:.75rem 0;border-bottom:0.5px solid var(--brd);}
+.mth{width:42px;height:42px;border-radius:8px;background:var(--bg2);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;}
+.mth img{width:100%;height:100%;object-fit:cover;}
+.mn{font-size:13px;font-weight:500;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--txt);}
+.mt{font-size:11px;color:var(--txt2);margin-top:1px;}
+.mk{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:.03em;color:var(--txt);}
+.cbtn{width:100%;margin-top:1.25rem;padding:.875rem;background:var(--acc);border:none;border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.08em;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .15s;margin-bottom:1rem;}
+.cbtn:hover{opacity:.88;}
+
+/* SLEEP */
+.sleep-big{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:.03em;line-height:1;color:var(--txt);margin-bottom:.25rem;}
+.sleep-sub{font-size:11px;color:var(--txt2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:1.25rem;}
+.sbar{display:flex;gap:2px;height:5px;border-radius:3px;overflow:hidden;margin-bottom:.5rem;}
+.sg{height:100%;}
+.sleg{display:flex;gap:1rem;margin-bottom:1.5rem;}
+.leg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--txt2);}
+.ld{width:7px;height:7px;border-radius:50%;}
+.rcard{display:flex;align-items:center;justify-content:space-between;background:var(--acc-dim);border:0.5px solid #B5D4F4;border-radius:10px;padding:1.125rem;margin-bottom:1rem;}
+.rl{font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--acc);font-weight:600;margin-bottom:3px;}
+.rs{font-family:'Bebas Neue',sans-serif;font-size:38px;letter-spacing:.04em;color:var(--acc-dark);line-height:1;}
+.rt{display:inline-block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;padding:3px 10px;border-radius:4px;margin-top:5px;font-weight:600;background:var(--acc);color:#fff;}
+.rr{text-align:right;}
+.rh{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--acc-dark);}
+.rhl{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--acc);}
+.rd{font-size:11px;color:var(--acc-dark);margin-top:4px;font-weight:500;}
+.aic{border-left:3px solid var(--acc);padding:.875rem 1rem .875rem 1.125rem;background:var(--bg2);border-radius:0 10px 10px 0;margin-bottom:.75rem;}
+.ail{font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--acc);font-weight:600;margin-bottom:4px;}
+.ail.s{color:var(--txt2);}
+.ait{font-size:13px;color:var(--txt);line-height:1.5;}
+
+/* SHEET */
+.sho{display:none;position:absolute;inset:0;background:rgba(0,0,0,.6);align-items:flex-end;z-index:100;border-radius:44px;overflow:hidden;}
+.sho.open{display:flex;}
+.sht{background:var(--bg);border-radius:20px 20px 0 0;padding:1.25rem 1.25rem 2rem;width:100%;}
+.shh{width:32px;height:3px;background:var(--brd2);border-radius:2px;margin:0 auto 1rem;}
+.stt{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:.05em;margin-bottom:1rem;color:var(--txt);}
+.drp{border:0.5px dashed var(--brd2);border-radius:10px;padding:1.75rem 1rem;text-align:center;cursor:pointer;transition:background .15s;}
+.drp:hover{background:var(--bg2);}
+.di{width:44px;height:44px;background:var(--acc-dim);border-radius:50%;margin:0 auto .75rem;display:flex;align-items:center;justify-content:center;}
+.dt{font-size:13px;color:var(--txt2);}
+.dt strong{color:var(--txt);font-weight:500;}
+input[type=file]{display:none;}
+.prev{width:100%;height:150px;object-fit:cover;border-radius:10px;margin-bottom:.875rem;}
+.dots{display:flex;align-items:center;justify-content:center;gap:8px;height:48px;}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--acc);animation:bl 1.2s ease-in-out infinite;}
+.dot:nth-child(2){animation-delay:.2s;}.dot:nth-child(3){animation-delay:.4s;}
+@keyframes bl{0%,80%,100%{opacity:.2;transform:scale(.75);}40%{opacity:1;transform:scale(1);}}
+.rb{background:var(--bg2);border-radius:10px;padding:1rem;}
+.rbn{font-size:14px;font-weight:500;color:var(--txt);}
+.rbk{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:.04em;color:var(--acc);margin:.2rem 0;}
+.rbm{display:flex;gap:1rem;font-size:12px;color:var(--txt2);}
+.okb{display:block;width:100%;margin-top:.875rem;padding:.75rem;border-radius:10px;background:var(--acc);color:#fff;border:none;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.08em;cursor:pointer;transition:opacity .15s;}
+.okb:hover{opacity:.88;}
+.ghb{display:block;width:100%;margin-top:.5rem;padding:.625rem;border-radius:10px;background:transparent;color:var(--txt2);border:0.5px solid var(--brd2);font-size:13px;cursor:pointer;font-family:'Barlow',sans-serif;}
+.ghb:hover{background:var(--bg2);}
+
+/* AI Recap loading */
+.ai-recap-loading{display:none;padding:1rem 0;text-align:center;}
+.ai-recap-loading.show{display:block;}
+</style>
+</head>
+<body>
+<div class="phone">
+  <!-- Status bar -->
+  <div class="status-bar">
+    <span class="status-time" id="statusTime">09:41</span>
+    <div class="status-icons">
+      <svg viewBox="0 0 14 14" fill="none"><rect x="1" y="4" width="2" height="7" rx=".5" fill="var(--txt)"/><rect x="4" y="2.5" width="2" height="8.5" rx=".5" fill="var(--txt)"/><rect x="7" y="1" width="2" height="10" rx=".5" fill="var(--txt)"/><rect x="10" y="3.5" width="3" height="7.5" rx=".5" fill="var(--txt)" opacity=".3"/></svg>
+      <svg viewBox="0 0 14 14" fill="none"><path d="M2 7a5 5 0 0110 0" stroke="var(--txt)" stroke-width="1.2" stroke-linecap="round"/><path d="M4.5 7a2.5 2.5 0 015 0" stroke="var(--txt)" stroke-width="1.2" stroke-linecap="round"/><circle cx="7" cy="7" r="1" fill="var(--txt)"/></svg>
+      <svg viewBox="0 0 18 10" fill="none"><rect x=".5" y=".5" width="15" height="9" rx="2.5" stroke="var(--txt)" stroke-opacity=".35"/><rect x="16" y="3" width="1.5" height="4" rx=".75" fill="var(--txt)" fill-opacity=".4"/><rect x="1.5" y="1.5" width="10" height="7" rx="1.5" fill="var(--txt)"/></svg>
+    </div>
+  </div>
+
+  <div class="app-body">
+
+  <!-- HOME -->
+  <div class="screen active" id="s-home">
+    <div class="scroll-area">
+      <div class="top-row">
+        <div><div class="greet">Good morning</div><div class="sub" id="todayDate">Thursday · March 26</div></div>
+        <div class="day-badge"><span>Day 14</span></div>
+      </div>
+
+      <div class="qcard">
+        <div class="qtxt" id="qTxt">Loading...</div>
+        <div class="qby" id="qBy"></div>
+      </div>
+
+      <div class="sl">Your body today</div>
+      <div class="vrow">
+        <div class="vt key"><div class="vv">78%</div><div class="vl">Recovery</div></div>
+        <div class="vt"><div class="vv">7h12</div><div class="vl">Sleep</div></div>
+        <div class="vt"><div class="vv">62</div><div class="vl">HRV</div></div>
+      </div>
+
+      <div class="sl">What to do today</div>
+      <div class="sug">
+        <div class="si b"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2v4M9 12v4M2 9h4M12 9h4" stroke="#1A6FD4" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="9" r="2.5" stroke="#1A6FD4" stroke-width="1.5"/></svg></div>
+        <div><div class="st">Train hard today</div><div class="sd">Recovery at 78%. Your body is ready. Go heavy — don't waste this window.</div></div>
+      </div>
+      <div class="sug">
+        <div class="si g"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 13s1-4 5-4 5-4 5-4" stroke="#3B6D11" stroke-width="1.5" stroke-linecap="round"/><circle cx="14" cy="5" r="1.5" fill="#3B6D11"/></svg></div>
+        <div><div class="st">Hit your protein</div><div class="sd">Still need 88g — log your next meal with a photo.</div></div>
+      </div>
+      <div class="sug">
+        <div class="si s"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M14 10A6 6 0 018 4a6 6 0 00-1 11.9A6 6 0 0014 10z" stroke="#666" stroke-width="1.25"/></svg></div>
+        <div><div class="st">Sleep by 22:30</div><div class="sd">HRV up 8 pts this week. Protect the trend — same bedtime, lights out.</div></div>
+      </div>
+
+      <!-- JOURNAL -->
+      <div class="sl" style="margin-top:1.25rem;">Morning check-in</div>
+      <div class="j-card" id="jCard">
+        <div class="j-header" onclick="toggleJournal()">
+          <div class="j-title-wrap">
+            <div class="j-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="3" y="2" width="12" height="14" rx="2" stroke="#1A6FD4" stroke-width="1.25"/><path d="M6 6h6M6 9h6M6 12h4" stroke="#1A6FD4" stroke-width="1.25" stroke-linecap="round"/></svg></div>
+            <div><div class="j-title">Daily journal</div><div class="j-subtitle" id="jSub">4 questions · 2 min</div></div>
+          </div>
+          <div id="jBadge" class="j-badge">Open</div>
+        </div>
+        <div class="j-body" id="jBody" style="display:none;">
+          <div id="jSteps">
+            <div class="q-step" id="q0">
+              <div class="q-num">Question 1 of 4</div>
+              <div class="q-text">What is the one thing you want to accomplish today?</div>
+              <textarea class="q-input" id="a0" placeholder="Be specific. One thing."></textarea>
+              <div class="q-nav"><div class="q-dots"><div class="qdot active"></div><div class="qdot"></div><div class="qdot"></div><div class="qdot"></div></div><button class="q-next" onclick="nextQ(1)">Next</button></div>
+            </div>
+            <div class="q-step" id="q1" style="display:none;">
+              <div class="q-num">Question 2 of 4</div>
+              <div class="q-text">How is your energy and mindset right now?</div>
+              <textarea class="q-input" id="a1" placeholder="Honest answer only."></textarea>
+              <div class="q-nav"><div class="q-dots"><div class="qdot"></div><div class="qdot active"></div><div class="qdot"></div><div class="qdot"></div></div><button class="q-next" onclick="nextQ(2)">Next</button></div>
+            </div>
+            <div class="q-step" id="q2" style="display:none;">
+              <div class="q-num">Question 3 of 4</div>
+              <div class="q-text">What would make today a win — no matter what else happens?</div>
+              <textarea class="q-input" id="a2" placeholder="Define your own success."></textarea>
+              <div class="q-nav"><div class="q-dots"><div class="qdot"></div><div class="qdot"></div><div class="qdot active"></div><div class="qdot"></div></div><button class="q-next" onclick="nextQ(3)">Next</button></div>
+            </div>
+            <div class="q-step" id="q3" style="display:none;">
+              <div class="q-num">Question 4 of 4</div>
+              <div class="q-text">What are you grateful for this morning?</div>
+              <textarea class="q-input" id="a3" placeholder="Keep it real."></textarea>
+              <div class="q-nav"><div class="q-dots"><div class="qdot"></div><div class="qdot"></div><div class="qdot"></div><div class="qdot active"></div></div><button class="q-next" onclick="submitJournal()">Done</button></div>
+            </div>
+          </div>
+          <div id="jDone" style="display:none;">
+            <div class="j-done">
+              <div class="j-done-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10l4 4 8-8" stroke="#1A6FD4" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="j-done-txt">Logged. Keep moving.</div>
+              <div class="j-done-sub">See your weekly recap on Sunday.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WEEKLY RECAP -->
+      <div id="recapSection" style="display:none;padding-bottom:1.25rem;">
+        <div class="sl" style="margin-top:1.25rem;">Weekly recap</div>
+        <div class="recap-card">
+          <div class="recap-lbl">Your week in your own words</div>
+          <div class="ai-recap-loading" id="recapLoading">
+            <div class="dots" style="height:32px;"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+            <div style="font-size:11px;color:var(--txt2);text-transform:uppercase;letter-spacing:.07em;margin-top:6px;">AI is writing your recap...</div>
+          </div>
+          <div class="recap-txt" id="recapAiTxt" style="display:none;"></div>
+          <div id="recapContent"></div>
+        </div>
+        <button class="ghb" style="margin-top:.5rem;font-size:11px;text-transform:uppercase;letter-spacing:.07em;" onclick="hideRecap()">Dismiss</button>
+      </div>
+
+      <button class="ghb" style="margin-top:.75rem;margin-bottom:1.25rem;font-size:11px;text-transform:uppercase;letter-spacing:.07em;" onclick="showRecapDemo()">Preview weekly recap ↗</button>
+    </div>
+    <div class="nav">
+      <button class="nb active" onclick="go('home')"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 9L9 3l7 6" stroke="var(--acc)" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 8v7h10V8" stroke="var(--acc)" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="nl">Home</span></button>
+      <button class="nb" onclick="go('food')"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="3" y="7" width="12" height="8" rx="2" stroke="var(--txt2)" stroke-width="1.25"/><path d="M6 7V5.5a3 3 0 016 0V7" stroke="var(--txt2)" stroke-width="1.25"/></svg><span class="nl">Food</span></button>
+      <button class="nb" onclick="go('sleep')"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M14 10A6 6 0 018 4a6 6 0 00-1 11.9A6 6 0 0014 10z" stroke="var(--txt2)" stroke-width="1.25"/></svg><span class="nl">Sleep</span></button>
+    </div>
+  </div>
+
+  <!-- FOOD -->
+  <div class="screen" id="s-food">
+    <div class="scroll-area">
+      <div class="pgt">Food log</div>
+      <div class="kring">
+        <div class="rw">
+          <svg width="84" height="84" viewBox="0 0 84 84"><circle cx="42" cy="42" r="34" fill="none" stroke="var(--bg2)" stroke-width="7"/><circle cx="42" cy="42" r="34" fill="none" stroke="var(--acc)" stroke-width="7" stroke-dasharray="213" stroke-dashoffset="55" stroke-linecap="round" transform="rotate(-90 42 42)" id="ringArc"/></svg>
+          <div class="rc"><div class="rn" id="ringNum">1480</div><div class="ru">kcal</div></div>
+        </div>
+        <div class="rm"><h3 id="ringPct">74% of goal</h3><p id="ringLeft">520 kcal remaining<br>Daily goal: 2000</p></div>
+      </div>
+      <div class="macs">
+        <div class="mac"><div class="mv">112g</div><div class="ml">Protein</div><div class="mb" style="background:var(--acc);width:70%;"></div></div>
+        <div class="mac"><div class="mv">168g</div><div class="ml">Carbs</div><div class="mb" style="background:#888780;width:56%;"></div></div>
+        <div class="mac"><div class="mv">44g</div><div class="ml">Fat</div><div class="mb" style="background:#5F5E5A;width:62%;"></div></div>
+      </div>
+      <div class="sl">Logged today</div>
+      <div id="mealList">
+        <div class="meal-row"><div class="mth">🥣</div><div style="flex:1;min-width:0;"><div class="mn">Overnight oats</div><div class="mt">08:14</div></div><div class="mk">380</div></div>
+        <div class="meal-row"><div class="mth">🥗</div><div style="flex:1;min-width:0;"><div class="mn">Chicken caesar salad</div><div class="mt">12:31</div></div><div class="mk">520</div></div>
+        <div class="meal-row"><div class="mth">🍝</div><div style="flex:1;min-width:0;"><div class="mn">Pasta bolognese</div><div class="mt">18:45</div></div><div class="mk">580</div></div>
+      </div>
+      <button class="cbtn" onclick="document.getElementById('sh').classList.add('open')">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="5" width="14" height="10" rx="2" stroke="#fff" stroke-width="1.25"/><circle cx="9" cy="10" r="2.5" stroke="#fff" stroke-width="1.25"/><path d="M6 5V4.5A2.5 2.5 0 0111.5 4.5V5" stroke="#fff" stroke-width="1.25"/></svg>
+        Log meal with photo
+      </button>
+    </div>
+    <div class="nav">
+      <button class="nb" onclick="go('home')"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 9L9 3l7 6" stroke="var(--txt2)" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 8v7h10V8" stroke="var(--txt2)" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="nl">Home</span></button>
+      <button class="nb active" onclick="go('food')"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="3" y="7" width="12" height="8" rx="2" stroke="var(--acc)" stroke-width="1.25"/><path d="M6 7V5.5a3 3 0 016 0V7" stroke="var(--acc)" stroke-width="1.25"/></svg><span class="nl">Food</span></button>
+      <button class="nb" onclick="go('sleep')"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M14 10A6 6 0 018 4a6 6 0 00-1 11.9A6 6 0 0014 10z" stroke="var(--txt2)" stroke-width="1.25"/></svg><span class="nl">Sleep</span></button>
+    </div>
+  </div>
+
+  <!-- SLEEP -->
+  <div class="screen" id="s-sleep">
+    <div class="scroll-area">
+      <div class="pgt">Sleep & Recovery</div>
+      <div class="sleep-big">7<span style="font-size:28px;">h</span> 12<span style="font-size:28px;">m</span></div>
+      <div class="sleep-sub">Last night · Synced from Whoop</div>
+      <div class="sbar">
+        <div class="sg" style="width:8%;background:#B4B2A9;"></div>
+        <div class="sg" style="width:22%;background:#85B7EB;"></div>
+        <div class="sg" style="width:15%;background:var(--acc-dark);"></div>
+        <div class="sg" style="width:30%;background:#85B7EB;"></div>
+        <div class="sg" style="width:12%;background:var(--acc-dark);"></div>
+        <div class="sg" style="width:13%;background:#B4B2A9;"></div>
+      </div>
+      <div class="sleg">
+        <div class="leg"><div class="ld" style="background:#B4B2A9;"></div>Awake</div>
+        <div class="leg"><div class="ld" style="background:#85B7EB;"></div>Light</div>
+        <div class="leg"><div class="ld" style="background:var(--acc-dark);"></div>Deep</div>
+      </div>
+      <div class="rcard">
+        <div><div class="rl">Recovery score</div><div class="rs">78%</div><div class="rt">Green · Train hard</div></div>
+        <div class="rr"><div class="rh">62</div><div class="rhl">HRV</div><div class="rd">+8 vs last week</div></div>
+      </div>
+      <div class="sl">AI insight</div>
+      <div class="aic"><div class="ail">Based on your data</div><div class="ait">Deep sleep at 27% — above average. HRV trending up all week. Your body is adapting. Push the session today. Don't leave gains on the table.</div></div>
+      <div class="aic" style="border-left-color:var(--brd2);margin-bottom:1.25rem;"><div class="ail s">Tomorrow's plan</div><div class="ait">After today's session, tomorrow is rest or mobility. Eat maintenance, no alcohol, bed before 23:00. Protect the trend.</div></div>
+    </div>
+    <div class="nav">
+      <button class="nb" onclick="go('home')"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 9L9 3l7 6" stroke="var(--txt2)" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 8v7h10V8" stroke="var(--txt2)" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="nl">Home</span></button>
+      <button class="nb" onclick="go('food')"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="3" y="7" width="12" height="8" rx="2" stroke="var(--txt2)" stroke-width="1.25"/><path d="M6 7V5.5a3 3 0 016 0V7" stroke="var(--txt2)" stroke-width="1.25"/></svg><span class="nl">Food</span></button>
+      <button class="nb active" onclick="go('sleep')"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M14 10A6 6 0 018 4a6 6 0 00-1 11.9A6 6 0 0014 10z" stroke="var(--acc)" stroke-width="1.25"/></svg><span class="nl">Sleep</span></button>
+    </div>
+  </div>
+
+  <!-- PHOTO SHEET -->
+  <div class="sho" id="sh">
+    <div class="sht">
+      <div class="shh"></div>
+      <div class="stt">Log meal</div>
+      <div id="sUp">
+        <label for="fi"><div class="drp"><div class="di"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="5" width="16" height="12" rx="2" stroke="var(--acc)" stroke-width="1.25"/><circle cx="10" cy="11" r="3" stroke="var(--acc)" stroke-width="1.25"/><path d="M7 5V4.5A2.5 2.5 0 0112.5 4.5V5" stroke="var(--acc)" stroke-width="1.25"/></svg></div><div class="dt"><strong>Tap to upload a food photo</strong><br>AI identifies food and calculates kcal</div></div></label>
+        <input type="file" id="fi" accept="image/*" onchange="handlePhoto(event)">
+      </div>
+      <div id="sAn" style="display:none;">
+        <img id="pi1" class="prev" src="" alt="">
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <div style="text-align:center;font-size:11px;color:var(--txt2);text-transform:uppercase;letter-spacing:.08em;margin-top:4px;">Analyzing with AI</div>
+      </div>
+      <div id="sRes" style="display:none;">
+        <img id="pi2" class="prev" src="" alt="">
+        <div class="rb"><div class="rbn" id="rN"></div><div class="rbk" id="rK"></div><div class="rbm" id="rM"></div></div>
+        <button class="okb" onclick="saveMeal()">Add to log</button>
+        <button class="ghb" onclick="resetSheet()">Retake photo</button>
+      </div>
+      <button class="ghb" style="margin-top:.5rem;" onclick="resetSheet()">Cancel</button>
+    </div>
+  </div>
+
+  </div><!-- end app-body -->
+</div><!-- end phone -->
+
+<script>
+// Clock
+function updateClock(){
+  const n=new Date();
+  document.getElementById('statusTime').textContent=n.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+}
+updateClock();setInterval(updateClock,10000);
+
+// Quote
+const quotes=[
+  {t:"The man who moves a mountain begins by carrying away small stones.",a:"Confucius"},
+  {t:"Do not pray for an easy life, pray for the strength to endure a difficult one.",a:"Bruce Lee"},
+  {t:"You have power over your mind, not outside events.",a:"Marcus Aurelius"},
+  {t:"Hard choices, easy life. Easy choices, hard life.",a:"Jerzy Gregorek"},
+  {t:"Discipline is the bridge between goals and accomplishment.",a:"Jim Rohn"},
+  {t:"Strength does not come from winning. Your struggles develop your strengths.",a:"Arnold Schwarzenegger"},
+  {t:"The successful warrior is the average man with laser-like focus.",a:"Bruce Lee"},
+  {t:"We suffer more in imagination than in reality.",a:"Seneca"},
+  {t:"What you do every day matters more than what you do once in a while.",a:"Gretchen Rubin"},
+  {t:"First say to yourself what you would be, and then do what you have to do.",a:"Epictetus"},
+  {t:"A man who conquers himself is greater than one who conquers a thousand men in battle.",a:"Buddha"},
+  {t:"Either you run the day or the day runs you.",a:"Jim Rohn"},
+  {t:"The iron never lies to you.",a:"Henry Rollins"},
+  {t:"Pain is temporary. It may last a minute, or an hour, or a day — but it will subside.",a:"Lance Armstrong"},
+];
+const q=quotes[new Date().getDate()%quotes.length];
+document.getElementById('qTxt').textContent='"'+q.t+'"';
+document.getElementById('qBy').textContent='— '+q.a;
+
+const questions=[
+  "What is the one thing you want to accomplish today?",
+  "How is your energy and mindset right now?",
+  "What would make today a win — no matter what else happens?",
+  "What are you grateful for this morning?"
+];
+
+let journalOpen=false,journalDone=false;
+window._answers=[];
+window._allWeek=[];
+
+function toggleJournal(){
+  if(journalDone)return;
+  journalOpen=!journalOpen;
+  document.getElementById('jBody').style.display=journalOpen?'block':'none';
+  document.getElementById('jBadge').textContent=journalOpen?'Close':'Open';
+}
+
+function nextQ(n){
+  window._answers[n-1]=document.getElementById('a'+(n-1)).value.trim();
+  document.getElementById('q'+(n-1)).style.display='none';
+  document.getElementById('q'+n).style.display='block';
+}
+
+function submitJournal(){
+  window._answers[3]=document.getElementById('a3').value.trim();
+  const d=new Date();
+  window._allWeek.push({day:d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'short'}),answers:window._answers.slice()});
+  document.getElementById('jSteps').style.display='none';
+  document.getElementById('jDone').style.display='block';
+  document.getElementById('jBadge').textContent='Done';
+  document.getElementById('jBadge').style.background='#27500A';
+  document.getElementById('jSub').textContent='Logged today';
+  journalDone=true;
+}
+
+async function showRecapDemo(){
+  const demoData=[
+    {day:'Monday 22 Mar',answers:["Finish the project proposal","Tired but focused","Get the proposal out the door","Health and a clear head"]},
+    {day:'Tuesday 23 Mar',answers:["Hit a new deadlift PR","Feeling sharp and ready","Leave nothing in the tank","My training partner"]},
+    {day:'Wednesday 24 Mar',answers:["Deep work — no distractions","Low energy, early night needed","Two hours of focused work","Woke up at 05:30 — proud of that"]},
+    {day:'Thursday 25 Mar',answers:["Have a real conversation with someone I care about","Strong. Clear. Ready.","Show up for training and my family","Coffee, silence, and a good night's sleep"]},
+  ];
+  if(window._answers.length>0)demoData.push({day:'Today',answers:window._answers});
+
+  // Show raw entries first
+  const c=document.getElementById('recapContent');
+  c.innerHTML='';
+  demoData.forEach(entry=>{
+    const d=document.createElement('div');d.className='recap-entry';
+    d.innerHTML=`<div class="re-day">${entry.day}</div><div class="re-q">${questions[0]}</div><div class="re-a">${entry.answers[0]||'—'}</div><div class="re-q" style="margin-top:4px;">${questions[2]}</div><div class="re-a">${entry.answers[2]||'—'}</div>`;
+    c.appendChild(d);
+  });
+
+  document.getElementById('recapSection').style.display='block';
+  document.getElementById('recapSection').scrollIntoView({behavior:'smooth'});
+
+  // Call AI for written recap
+  document.getElementById('recapLoading').classList.add('show');
+  document.getElementById('recapAiTxt').style.display='none';
+
+  try{
+    const journalText=demoData.map(e=>`${e.day}:\n- Goal: ${e.answers[0]||'—'}\n- Energy: ${e.answers[1]||'—'}\n- Win condition: ${e.answers[2]||'—'}\n- Gratitude: ${e.answers[3]||'—'}`).join('\n\n');
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:300,
+        messages:[{role:'user',content:`You are a direct, no-nonsense coach writing a weekly recap for a man. Based on his daily journal entries below, write a 3-4 sentence personal recap. Be honest, direct, and motivating. Mention specific patterns you notice. No fluff, no softness. Just truth and forward momentum.\n\nJournal entries:\n${journalText}`}]
+      })
+    });
+    const data=await res.json();
+    const txt=data.content.find(b=>b.type==='text')?.text||'';
+    document.getElementById('recapLoading').classList.remove('show');
+    document.getElementById('recapAiTxt').textContent=txt;
+    document.getElementById('recapAiTxt').style.display='block';
+  }catch(e){
+    document.getElementById('recapLoading').classList.remove('show');
+    document.getElementById('recapAiTxt').textContent='Your focus and discipline stood out this week. You showed up even on the low-energy days — that matters more than the high-performance ones. Keep the bedtime consistent and the next week will build on this one.';
+    document.getElementById('recapAiTxt').style.display='block';
+  }
+}
+
+function hideRecap(){document.getElementById('recapSection').style.display='none';}
+
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('s-'+id).classList.add('active');
+  const idx={'home':0,'food':1,'sleep':2}[id];
+  document.querySelectorAll('.nb')[idx].classList.add('active');
+}
+
+function handlePhoto(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    const src=ev.target.result;
+    document.getElementById('pi1').src=src;
+    document.getElementById('pi2').src=src;
+    document.getElementById('sUp').style.display='none';
+    document.getElementById('sAn').style.display='block';
+    callAI(src.split(',')[1]);
+  };
+  r.readAsDataURL(f);
+}
+
+async function callAI(b64){
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:250,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}},{type:'text',text:'Analyze this food photo. Reply ONLY with JSON, no backticks: {"name":"...","kcal":0,"protein_g":0,"carbs_g":0,"fat_g":0}'}]}]})});
+    const d=await res.json();
+    const txt=d.content.find(b=>b.type==='text')?.text||'{}';
+    showRes(JSON.parse(txt.replace(/```json|```/g,'').trim()));
+  }catch(e){showRes({name:'Could not read',kcal:0,protein_g:0,carbs_g:0,fat_g:0});}
+}
+
+function showRes(r){
+  document.getElementById('sAn').style.display='none';
+  document.getElementById('sRes').style.display='block';
+  document.getElementById('rN').textContent=r.name||'Food item';
+  document.getElementById('rK').textContent=(r.kcal||0)+' kcal';
+  document.getElementById('rM').innerHTML=`<span>P ${r.protein_g||0}g</span><span>C ${r.carbs_g||0}g</span><span>F ${r.fat_g||0}g</span>`;
+  window._m=r;
+}
+
+function saveMeal(){
+  const m=window._m;if(!m)return;
+  const t=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  const d=document.createElement('div');d.className='meal-row';
+  d.innerHTML=`<div class="mth"><img src="${document.getElementById('pi2').src}" alt=""></div><div style="flex:1;min-width:0;"><div class="mn">${m.name}</div><div class="mt">${t}</div></div><div class="mk">${m.kcal}</div>`;
+  document.getElementById('mealList').appendChild(d);
+  const cur=parseInt(document.getElementById('ringNum').textContent)||0;
+  const nt=cur+(m.kcal||0);
+  const pct=Math.min(100,Math.round(nt/2000*100));
+  document.getElementById('ringNum').textContent=nt;
+  document.getElementById('ringPct').textContent=pct+'% of goal';
+  document.getElementById('ringLeft').textContent=Math.max(0,2000-nt)+' kcal remaining\nDaily goal: 2000';
+  document.getElementById('ringArc').setAttribute('stroke-dashoffset',Math.round(213-(213*pct/100)));
+  resetSheet();
+  go('food');
+}
+
+function resetSheet(){
+  document.getElementById('sh').classList.remove('open');
+  document.getElementById('sUp').style.display='block';
+  document.getElementById('sAn').style.display='none';
+  document.getElementById('sRes').style.display='none';
+  document.getElementById('fi').value='';
+  window._m=null;
+}
+</script>
+</body>
+</html>

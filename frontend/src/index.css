@@ -1,0 +1,23 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --acc: #1A6FD4;
+  --acc-dark: #0C4A9E;
+  --acc-dim: #E6F1FB;
+  --acc-mid: #378ADD;
+  --bg: #ffffff;
+  --bg2: #f4f4f4;
+  --bg3: #ebebeb;
+  --txt: #0a0a0a;
+  --txt2: #666;
+  --txt3: #999;
+  --brd: rgba(0,0,0,0.1);
+  --brd2: rgba(0,0,0,0.2);
+}
+
+html, body, #root {
+  height: 100%;
+  background: #0a0a0a;
+  font-family: 'Barlow', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}

@@ -1,0 +1,91 @@
+.wrap {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0a0a0a;
+  padding: 1.5rem;
+}
+
+.card {
+  width: 100%;
+  max-width: 360px;
+  background: var(--bg);
+  border-radius: 16px;
+  padding: 2rem 1.5rem;
+}
+
+.title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 48px;
+  letter-spacing: 0.08em;
+  color: var(--txt);
+  line-height: 1;
+}
+
+.sub {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--txt2);
+  margin-top: 4px;
+  margin-bottom: 2rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.input {
+  width: 100%;
+  border: 0.5px solid var(--brd2);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-size: 14px;
+  font-family: 'Barlow', sans-serif;
+  background: var(--bg2);
+  color: var(--txt);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--acc);
+}
+
+.error {
+  font-size: 12px;
+  color: #c0392b;
+}
+
+.btn {
+  width: 100%;
+  padding: 0.875rem;
+  background: var(--acc);
+  border: none;
+  border-radius: 10px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 0.08em;
+  color: #fff;
+  cursor: pointer;
+  margin-top: 0.25rem;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+}
+
+.toggle {
+  display: block;
+  width: 100%;
+  margin-top: 1rem;
+  padding: 0.5rem;
+  background: transparent;
+  border: none;
+  font-size: 13px;
+  color: var(--txt2);
+  cursor: pointer;
+  font-family: 'Barlow', sans-serif;
+}

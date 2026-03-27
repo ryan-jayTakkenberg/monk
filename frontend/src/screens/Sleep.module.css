@@ -1,0 +1,73 @@
+.card {
+  background: var(--bg2);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.cardLabel {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--txt3);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.recoveryScore {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 52px;
+  letter-spacing: 0.03em;
+  line-height: 1;
+}
+
+.bigStat {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 42px;
+  letter-spacing: 0.03em;
+  color: var(--txt);
+  line-height: 1;
+}
+
+.bigStat span {
+  font-size: 20px;
+  color: var(--txt3);
+  margin-left: 3px;
+}
+
+.stageBars {
+  display: flex;
+  gap: 4px;
+  margin-top: 1rem;
+  align-items: flex-end;
+}
+
+.stageBar {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stageBarFill {
+  height: 8px;
+  border-radius: 4px;
+}
+
+.stageLabel {
+  font-size: 10px;
+  color: var(--txt3);
+  white-space: nowrap;
+}
+
+.notConnected {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--txt);
+  margin-bottom: 0.4rem;
+}
+
+.notConnectedSub {
+  font-size: 13px;
+  color: var(--txt2);
+  line-height: 1.5;
+}
