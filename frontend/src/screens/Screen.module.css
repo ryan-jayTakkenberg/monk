@@ -52,3 +52,53 @@
   color: var(--txt2);
   padding: 1rem 0;
 }
+
+/* ── Skeleton loading ─────────────────────────────────── */
+@keyframes skeletonPulse {
+  0%   { opacity: 1; }
+  50%  { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+.skeletonCard {
+  background: var(--bg2);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  animation: skeletonPulse 1.6s ease-in-out infinite;
+}
+
+.skeletonQuoteCard {
+  background: var(--bg2);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  margin-bottom: 1rem;
+  border-left: 3px solid var(--bg3, #1e1e1e);
+  animation: skeletonPulse 1.6s ease-in-out infinite;
+}
+
+.skeletonLine {
+  background: var(--bg3, #1e1e1e);
+  border-radius: 4px;
+  height: 12px;
+  margin-bottom: 0.6rem;
+}
+
+.skeletonLineSm {
+  background: var(--bg3, #1e1e1e);
+  border-radius: 4px;
+  height: 10px;
+  margin-bottom: 0.5rem;
+}
+
+.skeletonLineLg {
+  background: var(--bg3, #1e1e1e);
+  border-radius: 4px;
+  height: 18px;
+  margin-bottom: 0.75rem;
+}
+
+.skeletonBlock {
+  background: var(--bg3, #1e1e1e);
+  border-radius: 4px;
+}

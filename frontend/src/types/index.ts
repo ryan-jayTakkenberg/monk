@@ -47,3 +47,21 @@ export interface SleepData {
   recovery_score: number
   hrv: number
 }
+
+export interface HealthData {
+  connected: boolean
+  data: SleepData | null
+}
+
+export interface HistoryEntry {
+  date: string
+  recovery_score: number
+  duration_hours: number
+  hrv: number
+  deep_pct: number
+}
+
+export interface MealSettings {
+  kcal_goal: number
+  protein_goal_g: number
+}

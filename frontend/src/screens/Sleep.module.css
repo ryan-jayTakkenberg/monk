@@ -95,3 +95,113 @@
   color: var(--txt2);
   line-height: 1.5;
 }
+
+/* 7-day sleep bar chart */
+
+.barChart {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  margin-top: 0.75rem;
+}
+
+.barCol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  gap: 4px;
+}
+
+.barValue {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 11px;
+  color: var(--txt3);
+  line-height: 1;
+  text-align: center;
+}
+
+.barTrack {
+  width: 100%;
+  height: 80px;
+  background: var(--bg3);
+  border-radius: 4px;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+.barFill {
+  width: 100%;
+  border-radius: 4px;
+  transition: height 0.3s ease;
+}
+
+.barDay {
+  font-family: 'Barlow', sans-serif;
+  font-size: 10px;
+  color: var(--txt3);
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* AI Insights */
+
+.insightsSection {
+  margin-bottom: 1rem;
+}
+
+.insightsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.insightsSectionLabel {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--txt3);
+  font-weight: 600;
+}
+
+.refreshBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: 'Barlow', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--acc);
+  cursor: pointer;
+  letter-spacing: 0.02em;
+}
+
+.refreshBtn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.insightCard {
+  background: var(--bg2);
+  border: 1px solid var(--bg3);
+  border-radius: 10px;
+  padding: 0.9rem 1rem;
+  margin-bottom: 0.6rem;
+}
+
+.insightTitle {
+  font-family: 'Barlow', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--txt);
+  margin-bottom: 0.3rem;
+}
+
+.insightDesc {
+  font-family: 'Barlow', sans-serif;
+  font-size: 13px;
+  color: var(--txt2);
+  line-height: 1.5;
+}

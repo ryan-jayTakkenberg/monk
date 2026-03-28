@@ -4,7 +4,7 @@ import api from '../api/client'
 import BottomNav from '../components/BottomNav'
 import styles from './Screen.module.css'
 import s from './Home.module.css'
-import type { JournalEntry, Suggestion } from '../types'
+import type { JournalEntry, Suggestion, HealthData } from '../types'
 
 const QUOTES = [
   "You have power over your mind, not outside events. — Marcus Aurelius",
@@ -65,6 +65,7 @@ export default function Home() {
   const [suggestions, setSuggestions] = useState<Suggestion[]>([])
   const [recap, setRecap] = useState<string | null>(null)
   const [recapLoading, setRecapLoading] = useState(false)
+  const [vitals, setVitals] = useState<HealthData | null>(null)
 
   useEffect(() => {
     api.get('/api/journal/').then((res) => {
@@ -73,6 +74,12 @@ export default function Home() {
         setCompleted(true)
       }
     }).finally(() => setLoading(false))
+  }, [])
+
+  useEffect(() => {
+    api.get('/api/whoop/status/').then((res) => {
+      setVitals(res.data)
+    }).catch(() => {})
   }, [])
 
   useEffect(() => {
@@ -120,7 +127,30 @@ export default function Home() {
     }
   }
 
-  if (loading) return <div className={styles.screen}><BottomNav /></div>
+  if (loading) return (
+    <div className={styles.screen}>
+      <div className={styles.scroll}>
+        <div className={styles.topRow}>
+          <div>
+            <div className={styles.skeletonLineLg} style={{ width: '140px' }} />
+            <div className={styles.skeletonLineSm} style={{ width: '100px', marginTop: '6px' }} />
+          </div>
+        </div>
+        <div className={styles.skeletonQuoteCard}>
+          <div className={styles.skeletonLine} style={{ width: '90%' }} />
+          <div className={styles.skeletonLine} style={{ width: '60%' }} />
+        </div>
+        <div className={styles.skeletonCard}>
+          <div className={styles.skeletonLineSm} style={{ width: '80px' }} />
+          <div className={styles.skeletonLine} style={{ width: '85%', marginTop: '0.4rem' }} />
+          <div className={styles.skeletonLine} style={{ width: '70%' }} />
+          <div className={styles.skeletonBlock} style={{ height: '80px', marginTop: '0.75rem', marginBottom: '0.85rem' }} />
+          <div className={styles.skeletonBlock} style={{ height: '38px', borderRadius: '8px' }} />
+        </div>
+      </div>
+      <BottomNav />
+    </div>
+  )
 
   return (
     <div className={styles.screen}>
@@ -131,9 +161,9 @@ export default function Home() {
             <p className={styles.date}>{today}</p>
           </div>
           <button className={s.settingsBtn} onClick={() => navigate('/settings')} aria-label="Settings">
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-              <circle cx="9" cy="9" r="2.5" stroke="var(--txt2)" strokeWidth="1.25"/>
-              <path d="M9 1v2M9 15v2M1 9h2M15 9h2M3.22 3.22l1.42 1.42M13.36 13.36l1.42 1.42M3.22 14.78l1.42-1.42M13.36 4.64l1.42-1.42" stroke="var(--txt2)" strokeWidth="1.25" strokeLinecap="round"/>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" stroke="var(--txt2)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" stroke="var(--txt2)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
         </div>
@@ -142,6 +172,24 @@ export default function Home() {
         <div className={s.quoteCard}>
           <p className={s.quoteText}>{quote}</p>
         </div>
+
+        {/* Whoop vitals */}
+        {vitals?.connected && vitals.data && (
+          <div className={s.vitalsRow}>
+            <div className={s.vitalBox}>
+              <span className={s.vitalValue}>{Math.round(vitals.data.recovery_score)}%</span>
+              <span className={s.vitalLabel}>Recovery</span>
+            </div>
+            <div className={s.vitalBox}>
+              <span className={s.vitalValue}>{vitals.data.duration_hours.toFixed(1)}h</span>
+              <span className={s.vitalLabel}>Sleep</span>
+            </div>
+            <div className={s.vitalBox}>
+              <span className={s.vitalValue}>{Math.round(vitals.data.hrv)}ms</span>
+              <span className={s.vitalLabel}>HRV</span>
+            </div>
+          </div>
+        )}
 
         {/* Journal check-in */}
         {!completed ? (

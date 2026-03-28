@@ -20,6 +20,98 @@
   color: var(--txt);
 }
 
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.toggle {
+  background: var(--bg3);
+  border: 1px solid var(--brd2);
+  border-radius: 8px;
+  padding: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.goalRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.goalLabel {
+  font-family: 'Barlow', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--txt2);
+  flex: 1;
+}
+
+.goalInput {
+  font-family: 'Barlow', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--txt);
+  background: var(--bg3);
+  border: 1px solid var(--brd2);
+  border-radius: 8px;
+  padding: 0.45rem 0.65rem;
+  width: 96px;
+  text-align: right;
+  -moz-appearance: textfield;
+}
+
+.goalInput::-webkit-outer-spin-button,
+.goalInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.goalInput:focus {
+  outline: none;
+  border-color: var(--acc);
+}
+
+.saveRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.saveBtn {
+  font-family: 'Barlow', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--acc);
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1.1rem;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+}
+
+.saveBtn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.savedConfirm {
+  font-family: 'Barlow', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--acc);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 .logoutBtn {
   width: 100%;
   background: none;

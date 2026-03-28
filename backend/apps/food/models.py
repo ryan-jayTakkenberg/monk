@@ -17,3 +17,12 @@ class Meal(models.Model):
 
     def __str__(self):
         return f'{self.user.username} — {self.name} ({self.kcal} kcal)'
+
+
+class UserFoodSettings(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='food_settings')
+    kcal_goal = models.IntegerField(default=2000)
+    protein_goal_g = models.IntegerField(default=180)
+
+    def __str__(self):
+        return f'{self.user.username} — {self.kcal_goal} kcal goal'

@@ -185,3 +185,33 @@
   color: var(--txt3);
   margin-top: 2px;
 }
+
+.deleteBtn {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  color: var(--txt3);
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s ease;
+}
+
+.deleteBtn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.deleteBtn:not(:disabled):active {
+  color: #c0392b;
+}
+
+.deleteBtnBusy {
+  color: #c0392b;
+  opacity: 0.6;
+}

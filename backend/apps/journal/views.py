@@ -4,6 +4,7 @@ from rest_framework import status
 from django.utils import timezone
 from datetime import timedelta
 from .models import JournalEntry, WeeklyRecap
+from services.claude import generate_weekly_recap
 
 
 class JournalTodayView(APIView):
@@ -77,9 +78,6 @@ class WeeklyRecapView(APIView):
         })
 
     def post(self, request):
-        import anthropic
-        from django.conf import settings
-
         today = timezone.localdate()
         week_start = today - timedelta(days=today.weekday())
         week_end = week_start + timedelta(days=6)
@@ -95,32 +93,8 @@ class WeeklyRecapView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        journal_text = ''
-        for e in entries:
-            journal_text += (
-                f'Date: {e.date}\n'
-                f'One thing to accomplish: {e.answer_1}\n'
-                f'Energy and mindset: {e.answer_2}\n'
-                f'What makes today a win: {e.answer_3}\n'
-                f'Gratitude: {e.answer_4}\n\n'
-            )
-
         try:
-            client = anthropic.Anthropic(api_key=settings.ANTHROPIC_API_KEY)
-            message = client.messages.create(
-                model='claude-sonnet-4-6',
-                max_tokens=300,
-                messages=[{
-                    'role': 'user',
-                    'content': (
-                        'You are a direct, no-nonsense coach writing a weekly recap for a man. '
-                        'Based on his journal entries below, write 3-4 sentences. '
-                        'Be honest, specific, mention patterns you notice. No fluff, no softness.\n\n'
-                        f'{journal_text}'
-                    )
-                }]
-            )
-            ai_summary = message.content[0].text
+            ai_summary = generate_weekly_recap(list(entries))
         except Exception:
             return Response(
                 {'error': 'Recap generation failed.'},
@@ -137,3 +111,13 @@ class WeeklyRecapView(APIView):
             'recap': recap.ai_summary,
             'generated_at': recap.generated_at,
         })
+
+
+class WeeklyRecapHistoryView(APIView):
+    def get(self, request):
+        recaps = WeeklyRecap.objects.filter(user=request.user).order_by('-week_start')
+        return Response([{
+            'week_start': r.week_start,
+            'ai_summary': r.ai_summary,
+            'generated_at': r.generated_at,
+        } for r in recaps])

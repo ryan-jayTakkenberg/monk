@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.utils import timezone
 from .models import WhoopToken, WhoopSleepRecord
+from services.claude import generate_suggestions
 
 
 class WhoopStatusView(APIView):
@@ -117,11 +118,26 @@ class WhoopSyncView(APIView):
             )
 
 
+class HealthHistoryView(APIView):
+    def get(self, request):
+        from datetime import date, timedelta
+        today = date.today()
+        week_ago = today - timedelta(days=6)
+        records = WhoopSleepRecord.objects.filter(
+            user=request.user,
+            recorded_date__range=(week_ago, today)
+        ).order_by('recorded_date')
+        return Response([{
+            'date': r.recorded_date,
+            'recovery_score': r.recovery_score,
+            'duration_hours': r.duration_hours,
+            'hrv': r.hrv,
+            'deep_pct': r.deep_pct,
+        } for r in records])
+
+
 class SuggestionsView(APIView):
     def get(self, request):
-        import anthropic
-        import json
-        from django.conf import settings
         from django.db.models import Sum
         from apps.food.models import Meal
 
@@ -145,25 +161,7 @@ class SuggestionsView(APIView):
         sleep_h = record.duration_hours if record and record.duration_hours is not None else 'unknown'
 
         try:
-            client = anthropic.Anthropic(api_key=settings.ANTHROPIC_API_KEY)
-            message = client.messages.create(
-                model='claude-sonnet-4-6',
-                max_tokens=400,
-                messages=[{
-                    'role': 'user',
-                    'content': (
-                        'Give 3 short actionable suggestions for today. Direct tone, no softness. '
-                        'Return ONLY a JSON array: [{"title":"...","description":"..."}]\n\n'
-                        f'Recovery: {recovery}%\n'
-                        f'HRV: {hrv}ms\n'
-                        f'Sleep: {sleep_h}h\n'
-                        f'Kcal eaten: {kcal}\n'
-                        f'Protein eaten: {protein}g\n'
-                        'Protein goal: 180g'
-                    )
-                }]
-            )
-            suggestions = json.loads(message.content[0].text)
+            suggestions = generate_suggestions(recovery, hrv, sleep_h, kcal, protein)
             return Response(suggestions)
         except Exception:
             return Response(

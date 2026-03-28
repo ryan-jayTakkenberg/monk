@@ -20,6 +20,7 @@ export default function Food() {
   const [analysis, setAnalysis] = useState<MealAnalysis | null>(null)
   const [photoFile, setPhotoFile] = useState<File | null>(null)
   const [error, setError] = useState('')
+  const [deletingId, setDeletingId] = useState<number | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
   function fetchMeals() {
@@ -67,6 +68,26 @@ export default function Food() {
     setPreview(null)
     setAnalysis(null)
     setPhotoFile(null)
+  }
+
+  async function deleteMeal(id: number) {
+    setDeletingId(id)
+    try {
+      await api.delete(`/api/meals/${id}/`)
+      setMeals((prev) => prev.filter((m) => m.id !== id))
+      setTotals((prev) => {
+        const removed = meals.find((m) => m.id === id)
+        if (!removed) return prev
+        return {
+          kcal: prev.kcal - removed.kcal,
+          protein_g: prev.protein_g - removed.protein_g,
+          carbs_g: prev.carbs_g - removed.carbs_g,
+          fat_g: prev.fat_g - removed.fat_g,
+        }
+      })
+    } finally {
+      setDeletingId(null)
+    }
   }
 
   function cancel() {
@@ -182,6 +203,17 @@ export default function Food() {
                   <p className={s.mealRowName}>{m.name}</p>
                   <p className={s.mealRowMacros}>{m.kcal} kcal · {m.protein_g}g P · {m.carbs_g}g C · {m.fat_g}g F</p>
                 </div>
+                <button
+                  className={`${s.deleteBtn}${deletingId === m.id ? ` ${s.deleteBtnBusy}` : ''}`}
+                  onClick={() => deleteMeal(m.id)}
+                  disabled={deletingId !== null}
+                  aria-label={`Delete ${m.name}`}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                    <polyline points="3 6 5 6 21 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M19 6l-1 14H6L5 6M10 11v6M14 11v6M9 6V4h6v2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
               </div>
             ))}
           </div>

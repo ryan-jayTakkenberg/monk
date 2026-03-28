@@ -1,2 +1,4 @@
 web: gunicorn monk.wsgi:application --bind 0.0.0.0:$PORT --workers 2
+worker: celery -A monk worker --loglevel=info
+beat: celery -A monk beat --loglevel=info
 release: python manage.py migrate
