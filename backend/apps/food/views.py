@@ -18,6 +18,14 @@ class MealAnalyzeView(APIView):
         if not photo:
             return Response({'error': 'No photo provided.'}, status=status.HTTP_400_BAD_REQUEST)
 
+        allowed_content_types = {'image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'}
+        if photo.content_type not in allowed_content_types:
+            return Response({'error': 'Invalid file type. Upload a photo.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        max_size = 10 * 1024 * 1024
+        if photo.size > max_size:
+            return Response({'error': 'Photo too large. Maximum 10MB.'}, status=status.HTTP_400_BAD_REQUEST)
+
         image_data = base64.standard_b64encode(photo.read()).decode('utf-8')
         media_type = photo.content_type or 'image/jpeg'
 
@@ -92,3 +100,12 @@ class MealListView(APIView):
             photo=request.FILES.get('photo'),
         )
         return Response({'id': meal.id, 'name': meal.name, 'kcal': meal.kcal}, status=status.HTTP_201_CREATED)
+
+
+class MealDetailView(APIView):
+    def delete(self, request, pk):
+        meal = Meal.objects.filter(pk=pk, user=request.user).first()
+        if not meal:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        meal.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

@@ -20,6 +20,8 @@ export default function Login() {
       const res = await axios.post(url, { username, password })
       localStorage.setItem('access_token', res.data.access)
       localStorage.setItem('refresh_token', res.data.refresh)
+      if (res.data.username) localStorage.setItem('username', res.data.username)
+      else localStorage.setItem('username', username)
       navigate('/')
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {

@@ -1,0 +1,35 @@
+.card {
+  background: var(--bg2);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--txt3);
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.value {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--txt);
+}
+
+.logoutBtn {
+  width: 100%;
+  background: none;
+  border: 1px solid #c0392b;
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-family: 'Barlow', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #c0392b;
+  cursor: pointer;
+  margin-top: 1rem;
+}

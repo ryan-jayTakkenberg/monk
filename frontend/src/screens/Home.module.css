@@ -98,3 +98,90 @@
   margin-bottom: 2px;
   font-weight: 600;
 }
+
+.section {
+  margin-top: 1.5rem;
+}
+
+.sectionLabel {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--txt3);
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.suggestionCard {
+  background: var(--bg2);
+  border-radius: 10px;
+  padding: 0.9rem 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.suggestionTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--txt);
+  margin-bottom: 0.2rem;
+}
+
+.suggestionDesc {
+  font-size: 13px;
+  color: var(--txt2);
+  line-height: 1.4;
+}
+
+.recapCard {
+  background: var(--bg2);
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.recapText {
+  font-size: 14px;
+  color: var(--txt2);
+  line-height: 1.6;
+}
+
+.recapBtn {
+  width: 100%;
+  background: var(--bg2);
+  color: var(--acc);
+  border: 1px solid var(--brd2);
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-family: 'Barlow', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.recapBtn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.settingsBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.quoteCard {
+  background: var(--bg2);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  margin-bottom: 1rem;
+  border-left: 3px solid var(--acc);
+}
+
+.quoteText {
+  font-size: 13px;
+  color: var(--txt2);
+  line-height: 1.5;
+  font-style: italic;
+}

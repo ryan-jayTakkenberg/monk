@@ -59,6 +59,30 @@
   white-space: nowrap;
 }
 
+.syncBtn {
+  background: none;
+  border: 1px solid var(--brd2);
+  border-radius: 6px;
+  padding: 0.35rem 0.85rem;
+  font-family: 'Barlow', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--acc);
+  cursor: pointer;
+  align-self: center;
+}
+
+.syncBtn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.error {
+  font-size: 13px;
+  color: #c0392b;
+  margin-bottom: 0.75rem;
+}
+
 .notConnected {
   font-size: 15px;
   font-weight: 600;

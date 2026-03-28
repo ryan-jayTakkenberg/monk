@@ -33,6 +33,11 @@ export interface MealAnalysis {
   fat_g: number
 }
 
+export interface Suggestion {
+  title: string
+  description: string
+}
+
 export interface SleepData {
   recorded_date: string
   duration_hours: number

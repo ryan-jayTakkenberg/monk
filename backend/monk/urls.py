@@ -15,4 +15,5 @@ urlpatterns = [
     path('api/journal/', include('apps.journal.urls')),
     path('api/meals/', include('apps.food.urls')),
     path('api/whoop/', include('apps.health.urls')),
+    path('api/health/', include('apps.health.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

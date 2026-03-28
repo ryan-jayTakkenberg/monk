@@ -33,6 +33,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -127,3 +128,6 @@ ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY', '')
 WHOOP_CLIENT_ID = os.getenv('WHOOP_CLIENT_ID', '')
 WHOOP_CLIENT_SECRET = os.getenv('WHOOP_CLIENT_SECRET', '')
 WHOOP_REDIRECT_URI = os.getenv('WHOOP_REDIRECT_URI', 'http://localhost:8000/api/whoop/callback/')
+
+# WhiteNoise static files compression
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
