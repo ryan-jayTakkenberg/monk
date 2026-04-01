@@ -1,0 +1,12 @@
+{
+  "name": "Monk",
+  "short_name": "Monk",
+  "description": "Built for men who don't miss days.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#1A6FD4",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

@@ -8,28 +8,26 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      // Use injectManifest so our custom sw.ts handles fetch/offline logic
+      strategies: 'injectManifest',
+      srcDir: 'src',
+      filename: 'sw.ts',
       manifest: {
-        name: 'Monk — Mind. Body. Rest.',
+        name: 'Monk',
         short_name: 'Monk',
         description: 'Built for men who don\'t miss days.',
         theme_color: '#1A6FD4',
-        background_color: '#ffffff',
+        background_color: '#0a0a0a',
         display: 'standalone',
         orientation: 'portrait',
         start_url: '/',
         icons: [
-          { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
-          { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+          { src: '/icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any maskable' },
         ],
       },
-      workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
-        runtimeCaching: [
-          {
-            urlPattern: /^\/api\//,
-            handler: 'NetworkFirst',
-          },
-        ],
+      injectManifest: {
+        // Precache all built assets plus the offline fallback page
+        globPatterns: ['**/*.{js,css,html,ico,svg,woff2}'],
       },
     }),
   ],

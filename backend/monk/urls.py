@@ -3,6 +3,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerUIView
 from apps.auth_throttle import LoginRateThrottle
 from .views import RegisterView
 
@@ -22,4 +23,7 @@ urlpatterns = [
     path('api/meals/', include('apps.food.urls')),
     path('api/whoop/', include('apps.health.urls')),
     path('api/health/', include('apps.health.urls')),
+    # API schema & docs
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/docs/', SpectacularSwaggerUIView.as_view(url_name='schema'), name='swagger-ui'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

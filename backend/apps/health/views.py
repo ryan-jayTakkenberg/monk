@@ -4,6 +4,7 @@ from rest_framework import status
 from django.utils import timezone
 from .models import WhoopToken, WhoopSleepRecord
 from services.claude import generate_suggestions
+from services.whoop import get_today_data
 
 
 class WhoopStatusView(APIView):
@@ -32,8 +33,6 @@ class WhoopStatusView(APIView):
 
 class WhoopSyncView(APIView):
     def get(self, request):
-        import requests
-
         try:
             token = WhoopToken.objects.get(user=request.user)
         except WhoopToken.DoesNotExist:
@@ -42,80 +41,43 @@ class WhoopSyncView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        headers = {'Authorization': f'Bearer {token.access_token}'}
-
         try:
-            recovery_resp = requests.get(
-                'https://api.prod.whoop.com/developer/v1/recovery',
-                headers=headers
-            )
-            sleep_resp = requests.get(
-                'https://api.prod.whoop.com/developer/v1/activity/sleep',
-                headers=headers
-            )
-        except Exception:
-            return Response(
-                {'error': 'Sync failed.'},
-                status=status.HTTP_502_BAD_GATEWAY
-            )
-
-        if recovery_resp.status_code == 401 or sleep_resp.status_code == 401:
+            data = get_today_data(token.access_token)
+        except PermissionError:
             return Response(
                 {'error': 'Whoop token expired. Reconnect.'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
-
-        try:
-            recovery_data = recovery_resp.json()
-            sleep_data = sleep_resp.json()
-
-            # Parse recovery fields
-            recovery_records = recovery_data.get('records', [])
-            latest_recovery = recovery_records[0] if recovery_records else {}
-            recovery_score = latest_recovery.get('score', {}).get('recovery_score', None)
-            hrv = latest_recovery.get('score', {}).get('hrv_rmssd_milli', None)
-
-            # Parse sleep fields
-            sleep_records = sleep_data.get('records', [])
-            latest_sleep = sleep_records[0] if sleep_records else {}
-            total_in_bed_milli = latest_sleep.get('score', {}).get('total_in_bed_time_milli', 0)
-            duration_hours = round(total_in_bed_milli / 3_600_000, 2) if total_in_bed_milli else None
-
-            sleep_score = latest_sleep.get('score', {})
-            awake_pct = sleep_score.get('sleep_performance_percentage', {}).get('awake_pct', None) if isinstance(sleep_score.get('sleep_performance_percentage'), dict) else sleep_score.get('awake_pct', None)
-            light_pct = sleep_score.get('light_pct', None)
-            deep_pct = sleep_score.get('slow_wave_sleep_pct', None)
-
-            today = timezone.localdate()
-
-            record, _ = WhoopSleepRecord.objects.update_or_create(
-                user=request.user,
-                recorded_date=today,
-                defaults={
-                    'duration_hours': duration_hours,
-                    'recovery_score': recovery_score,
-                    'hrv': hrv,
-                    'awake_pct': awake_pct,
-                    'light_pct': light_pct,
-                    'deep_pct': deep_pct,
-                }
-            )
-
-            return Response({
-                'recorded_date': record.recorded_date,
-                'duration_hours': record.duration_hours,
-                'recovery_score': record.recovery_score,
-                'hrv': record.hrv,
-                'awake_pct': record.awake_pct,
-                'light_pct': record.light_pct,
-                'deep_pct': record.deep_pct,
-            })
-
         except Exception:
             return Response(
                 {'error': 'Sync failed.'},
                 status=status.HTTP_502_BAD_GATEWAY
             )
+
+        today = timezone.localdate()
+
+        record, _ = WhoopSleepRecord.objects.update_or_create(
+            user=request.user,
+            recorded_date=today,
+            defaults={
+                'duration_hours': data['duration_hours'],
+                'recovery_score': data['recovery_score'],
+                'hrv':            data['hrv'],
+                'awake_pct':      data['awake_pct'],
+                'light_pct':      data['light_pct'],
+                'deep_pct':       data['deep_pct'],
+            }
+        )
+
+        return Response({
+            'recorded_date':  record.recorded_date,
+            'duration_hours': record.duration_hours,
+            'recovery_score': record.recovery_score,
+            'hrv':            record.hrv,
+            'awake_pct':      record.awake_pct,
+            'light_pct':      record.light_pct,
+            'deep_pct':       record.deep_pct,
+        })
 
 
 class HealthHistoryView(APIView):

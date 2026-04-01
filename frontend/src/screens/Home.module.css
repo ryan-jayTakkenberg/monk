@@ -162,6 +162,13 @@
   cursor: default;
 }
 
+.recapGenerating {
+  font-size: 13px;
+  color: var(--txt3);
+  font-style: italic;
+  padding: 0.25rem 0;
+}
+
 .settingsBtn {
   background: none;
   border: none;

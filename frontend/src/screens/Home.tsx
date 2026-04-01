@@ -48,8 +48,10 @@ const QUESTIONS = [
 
 export default function Home() {
   const navigate = useNavigate()
-  const today = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })
-  const quote = QUOTES[(new Date().getDate() - 1) % QUOTES.length]
+  const now = new Date()
+  const today = now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })
+  const quote = QUOTES[(now.getDate() - 1) % QUOTES.length]
+  const isSunday = now.getDay() === 0
   const [entry, setEntry] = useState<JournalEntry | null>(null)
   const [completed, setCompleted] = useState(false)
   const [step, setStep] = useState(() => {
@@ -91,6 +93,12 @@ export default function Home() {
       if (res.data.recap) setRecap(res.data.recap)
     }).catch(() => {})
   }, [completed])
+
+  useEffect(() => {
+    if (!completed || recap !== null || recapLoading) return
+    if (!isSunday) return
+    generateRecap()
+  }, [completed, recap])
 
   async function handleNext() {
     if (step < 3) {
@@ -247,18 +255,22 @@ export default function Home() {
         {/* Weekly recap */}
         {completed && (
           <div className={s.section}>
-            <p className={s.sectionLabel}>Weekly recap</p>
+            <p className={s.sectionLabel}>{isSunday ? "This week's recap" : 'Weekly recap'}</p>
             {recap ? (
               <div className={s.recapCard}>
                 <p className={s.recapText}>{recap}</p>
               </div>
+            ) : isSunday ? (
+              <p className={s.recapGenerating}>
+                {recapLoading ? 'Generating weekly recap...' : 'No recap available.'}
+              </p>
             ) : (
               <button
                 className={s.recapBtn}
                 onClick={generateRecap}
                 disabled={recapLoading}
               >
-                {recapLoading ? 'Generating...' : 'Generate this week\'s recap'}
+                {recapLoading ? 'Generating...' : "Generate this week's recap"}
               </button>
             )}
           </div>
